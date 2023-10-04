@@ -1,20 +1,34 @@
 package com.sayan.RedisUsingSpring.Services;
 
 import com.sayan.RedisUsingSpring.Model.Student;
-import com.sayan.RedisUsingSpring.Repository.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class StudentServices {
-    @Autowired
-    private StudentRepo studentRepo;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+    private static final String HASH_Key = "Student";
     public Student save(Student student){
-        return studentRepo.save(student);
+        redisTemplate.opsForHash().put(HASH_Key,student.getRoll(),student);
+        return student;
     }
 
     public Student view(int id){
-        return studentRepo.findById(id).orElseThrow(()->new RuntimeException("user not exists"));
+        Object fromRedis = redisTemplate.opsForHash().get(HASH_Key, id);
+        return (Student) fromRedis;
+
+    }
+    public String delete(int id){
+        redisTemplate.opsForHash().delete(HASH_Key,id);
+        return "deleted "+ id;
+    }
+
+    public List<Student> findAll(){
+        return redisTemplate.opsForHash().values(HASH_Key);
     }
 }

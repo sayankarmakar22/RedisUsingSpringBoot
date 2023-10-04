@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/student")
 public class MainController {
@@ -21,5 +23,14 @@ public class MainController {
     @GetMapping("/view/{id}")
     public ResponseEntity<Student> view(@PathVariable  int id){
         return new ResponseEntity<>(studentServices.view(id),HttpStatus.FOUND);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable int id){
+        return new ResponseEntity<>(studentServices.delete(id),HttpStatus.OK);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<Student>> findAll(){
+        return new ResponseEntity<>(studentServices.findAll(),HttpStatus.FOUND);
     }
 }

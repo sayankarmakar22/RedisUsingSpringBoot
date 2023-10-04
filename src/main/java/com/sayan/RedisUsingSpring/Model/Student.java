@@ -7,11 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Student {
+@RedisHash("student")
+public class Student implements Serializable {
     @Id
     private int roll;
     private String name;
